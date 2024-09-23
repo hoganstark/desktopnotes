@@ -63,7 +63,7 @@ class desktopnotes:
         with notesjsonlock:
             if "-txt" in commandOptions:
                 with open(joinPath(root, "backups", f"{datetime.now().strftime('%d-%m-%Y (%H-%M-%S)')}.txt"), "wt", encoding="utf-8") as backuptxt:
-                    backuptxt.write(desktopnotes.loadNotes().strip("_").removeprefix("\n").removesuffix("\n"))
+                    backuptxt.write(desktopnotes.loadNotes(backup=1))
             else:
                 with open(joinPath(root, "notes.json"), "rt", encoding="utf-8") as notesjson:
                     notes: str = notesjson.read()
@@ -102,20 +102,24 @@ class desktopnotes:
             if len(notes) < 2:
                 with open(joinPath(root, "notes.json"), "wt", encoding="utf-8") as notesjson:
                     notesjson.write("{}")
-    def loadNotes(input: str = False) -> str:
+    def loadNotes(input: str = False, backup: bool = False) -> str:
         with notesjsonlock:
             with open(joinPath(root, "notes.json"), "rt", encoding="utf-8") as notesjson:
                 notes: dict[str, dict[str, str]] = jsonload(notesjson)
         if notes:
             output: str = ""
-            output += "_" * terminalWidth + "\n"
-            output += " " * floor(terminalWidth / 2 - 3) + "Notes:\n\n"
+            if backup:
+                output += "\n"
+            else:
+                output += "_" * terminalWidth + "\n"
+                output += " " * floor(terminalWidth / 2 - 3) + "Notes:\n\n"
             for eachNoteIndex, eachNote in notes.items():
                 for eachFlag in eachNote["flags"]:
                     output += " " + eachFlag
                 output += " | " + eachNoteIndex + " |" + eachNote["body"] + "\n\n"
             output = output.removesuffix("\n")
-            output += "_" * terminalWidth
+            if not backup:
+                output += "_" * terminalWidth
         elif not notes and not input:
             output: str = "Nothing noted.\n"
         elif not notes and input:
