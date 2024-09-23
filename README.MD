@@ -6,7 +6,7 @@
 
 Usage: `notes`
 
-Shows all created notes in the following format: *flags | note ID | note*.
+Shows all created notes in the format: *flags | note ID | note*.
 
 ### `note`:
 
