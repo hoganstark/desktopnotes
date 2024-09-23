@@ -63,7 +63,7 @@ class desktopnotes:
         with notesjsonlock:
             if "-txt" in commandOptions:
                 with open(joinPath(root, "backups", f"{datetime.now().strftime('%d-%m-%Y (%H-%M-%S)')}.txt"), "wt", encoding="utf-8") as backuptxt:
-                    backuptxt.write(desktopnotes.loadNotes())
+                    backuptxt.write(desktopnotes.loadNotes().strip("_").removeprefix("\n").removesuffix("\n"))
             else:
                 with open(joinPath(root, "notes.json"), "rt", encoding="utf-8") as notesjson:
                     notes: str = notesjson.read()
